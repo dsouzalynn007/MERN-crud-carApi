@@ -1,83 +1,77 @@
-let carService=require("./carsService")
-
-
-
+import { getAll_Service, 
+  getCar_Service,
+  createCar_Service,
+  updateCar_Service,
+  deleteCar_Service,
+  search_Service } from "./carsService.js"
     
-   let getAll=async (req, res)=> {
-    try {
-        let getAll = await carService.getAll(req,res)
-        res.status(200).send(getAll)
-    } catch (error) {
-        console.log(error)
-        res.send({
-            status: 500,
-            msg:"internal server error"
-        })
+  let failureFunc=(status, msg, error)=>{
+    return {
+      status: status,
+      msg: msg,
+      error: error,
     }
-}
-   let search = async (req, res) => {
-     try {
-       let search = await carService.search(req, res);
-       res.status(200).send(search);
-     } catch (error) {
-       console.log(error);
-       res.send({
-         status: 500,
-         msg: "internal server error",
-       });
-     }
-   };
+  }
+
+   let getAll = async (req, res)=> {
+    try {
+        let data = await getAll_Service(req,res)
+        res.status(200).send(data)
+    } catch (error) {
+        res.send(failureFunc(500, 'internal server error', error))
+      }
+    }
 
    let getCar = async (req, res) => {
      try {
-       let getCar = await carService.getCar(req, res);
-       res.status(200).send(getCar);
+       let data = await getCar_Service(req, res);
+       res.status(200).send(data);
      } catch (error) {
-       console.log(error);
-       res.send({
-         status: 500,
-         msg: "internal server error",
-       });
+        res.send(failureFunc(500, 'internal server error', error))
      }
    };
 
 let createCar = async (req, res) => {
     try {
-    let createCar = await carService.createCar(req);
-    res.status(200).send(createCar);
+    let data = await createCar_Service(req);
+    res.status(200).send(data);
   } catch (error) {
-    console.log(error);
-    res.send({
-      status: 500,
-      msg: "internal server error",
-    });
+      res.send(failureFunc(500, 'internal server error', error))
   }
 };
 
 let updateCar = async (req, res) => {
   try {
-    let updateCar = await carService.updateCar(req);
-    res.status(200).send(updateCar);
+    let data = await updateCar_Service(req);
+    res.status(200).send(data);
   } catch (error) {
-    console.log(error);
-    res.send({
-      status: 500,
-      msg: "internal server error",
-    });
+      res.send(failureFunc(500, 'internal server error', error))
   }
 };
 
 let deleteCar = async (req, res) => {
   try {
-    let deleteCar = await carService.deleteCar(req);
-    res.status(200).send(deleteCar);
+    let data = await deleteCar_Service(req);
+    res.status(200).send(data);
   } catch (error) {
-    console.log(error);
-    res.send({
-      status: 500,
-      msg: "internal server error",
-    });
+      res.send(failureFunc(500, 'internal server error', error))
   }
 };
 
-module.exports={getAll,createCar,updateCar,getCar,deleteCar,search}
+let search = async (req, res) => {
+  try {
+    let data = await search_Service(req, res);
+    res.status(200).send(data);
+  } catch (error) {
+      res.send(failureFunc(500, 'internal server error', error))
+  }
+};
+
+export {
+  getAll,
+  createCar,
+  updateCar,
+  getCar,
+  deleteCar,
+  search
+}

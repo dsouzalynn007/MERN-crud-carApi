@@ -1,146 +1,96 @@
-const carSchema = require("./Model")
+import carSchema from "./Model.js";
 
-
-
-
-
-    exports.getAll=async(req, res) =>{
-        try {
-            let data =await carSchema.find({})
-           return Promise.resolve({
-              statusCode: 200,
-              status: true,
-              msg: "cars Fetched",
-              data: data,
-            });
-        } catch (error) {
-            return Promise.resolve({
-              statusCode: 500,
-              status: false,
-              msg: "internal server error",
-            });
-        }
-        
-}
-
-
-    exports.search = async (req, res) => {
-        try {
-            let condition = {}
-            let query=req.query
-            if (query.make) {
-                condition.make = query.make;
-            }
-            if (query.model) {
-              condition.model = query.model;
-            }
-            if (query.fuel) {
-              condition.fuel = query.fuel;
-            }
-            if (query.mfg) {
-              condition.mfg = query.mfg;
-            } 
-            console.log(condition)
-        let data = await carSchema.find(condition);
-        return Promise.resolve({
-          statusCode: 200,
-          status: true,
-          msg: "cars Fetched",
-          data: data,
-        });
-      } catch (error) {
-        return Promise.resolve({
-          statusCode: 500,
-          status: false,
-          msg: "internal server error",
-        });
-      }
-};
-    
-
-    exports.getCar = async (req, res) => {
-      try {
-        let data = await carSchema.findById(req.params.carId);
-        return Promise.resolve({
-          statusCode: 200,
-          status: true,
-          msg: "cars Fetched",
-          data: data,
-        });
-      } catch (error) {
-        return Promise.resolve({
-          statusCode: 500,
-          status: false,
-          msg: "internal server error",
-        });
-      }
-    };
-    
-
-exports.createCar = async (req, res) => {
-    try {
-
-        data = await carSchema.create(req.body)
-        return Promise.resolve({
-          statusCode: 200,
-          status: true,
-          msg: "cars created",
-          data: data,
-        });
-    } catch (error) {
-        console.log(error)
-        return Promise.resolve({
-          statusCode: 500,
-            status: false,
-          error:error,
-          msg: "internal server error",
-        });
-    }
-}
-
-
-exports.updateCar = async (req, res) => {
-    try {
-        console.log(req.params)
-        let data = await carSchema.findByIdAndUpdate({ _id: req.params.carId }, req.body)
-        return Promise.resolve({
-          statusCode: 200,
-          status: true,
-          msg: "cars updated",
-          data: data,
-        });
-    } catch (error) {
-        console.log(error);
-        return Promise.resolve({
-          statusCode: 500,
-          status: false,
-          error: error,
-          msg: "internal server error",
-        });
-    }
-}
-
-
-
-exports.deleteCar = async (req, res) => {
-  try {
-    console.log(req.params);
-    let data = await carSchema.deleteOne(
-      { _id: req.params.carId },
-    );
-    return Promise.resolve({
-      statusCode: 200,
-      status: true,
-      msg: "car deleted",
-      data: data,
-    });
-  } catch (error) {
-    console.log(error);
-    return Promise.resolve({
-      statusCode: 500,
-      status: false,
-      error: error,
-      msg: "internal server error",
-    });
+let successFunc=(statusCode, status, msg, data)=>{
+  return {
+    statusCode: statusCode,
+    status: status,
+    msg: msg,
+    data: data,
   }
-};
+}
+let failureFunc=(statusCode, status, msg, error)=>{
+  return {
+    statusCode: statusCode,
+    status: status,
+    msg: msg,
+    error: error,
+  }
+}
+
+let getAll_Service = async (req, res) => {
+  try{
+    let data = await carSchema.find({})
+    return successFunc(200, true, 'all cars fetched', data)
+  } catch(error){
+      return failureFunc(500, false, 'internal server error', error)
+  }
+}
+
+let getCar_Service = async (req, res) => {
+  try{
+    let data = await carSchema.findById(req.params.carId)
+    return successFunc(200, true, 'selected car fetched', data)
+  } catch(error){
+      return failureFunc(500, false, 'internal server error', error)
+  }
+}
+
+let createCar_Service = async (req, res) => {
+  try{
+    let data = await carSchema.create(req.body)
+    return successFunc(200, true, 'car uploaded', data)
+  } catch(error){
+      return failureFunc(500, false, 'internal server error', error)
+  }
+}
+
+let updateCar_Service = async (req, res) => {
+  try{
+    let data = await carSchema.findByIdAndUpdate({ _id: req.params.carId }, req.body)
+    return successFunc(200, true, 'selected car updated', data)
+  } catch(error){
+      return failureFunc(500, false, 'internal server error', error)
+  }
+}
+
+let deleteCar_Service = async (req, res) => {
+  try{
+    let data = await carSchema.deleteOne({ _id: req.params.carId })
+    return successFunc(200, true, 'selected car deleted', data)
+  } catch(error){
+      return failureFunc(500, false, 'internal server error', error)
+  }
+}
+
+let search_Service = async (req, res) => {
+  try{
+    let condition = {}
+      let query=req.query
+      if (query.make) {
+          condition.make = query.make;
+      }
+      if (query.model) {
+        condition.model = query.model;
+      }
+      if (query.fuel) {
+        condition.fuel = query.fuel;
+      }
+      if (query.mfg) {
+        condition.mfg = query.mfg;
+      } 
+      console.log(condition)
+    let data = await carSchema.find(condition);
+    return successFunc(200, true, 'cars fetched', data)
+  } catch(error){
+      return failureFunc(500, false, 'internal server error', error)
+  }
+}
+
+export {
+  getAll_Service, 
+  getCar_Service,
+  createCar_Service,
+  updateCar_Service,
+  deleteCar_Service,
+  search_Service
+}

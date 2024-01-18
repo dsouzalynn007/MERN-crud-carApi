@@ -1,8 +1,7 @@
-let { Router } = require("express")
+import { Router } from "express"
 let router = Router()
+import carRoute from './apis/cars/allRoutes.js'
 
+router.use("/cars", carRoute)
 
-
-router.use("/cars",require("./apis/cars/index") )
-
-module.exports=router
+export default router

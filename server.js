@@ -1,24 +1,21 @@
-const express=require("express")
-const client = require("mongoose")
-let bodyParser=require("body-parser")
-let route =require("./Routes")
-
+import express from "express"
+import { connect } from "mongoose"
+import route from "./Routes.js"
+import cors from 'cors'
 
 let app = express()
-let mongoUrl = "mongodb+srv://praveenkumar04:Praveen5847@student.zhnecge.mongodb.net/";
+let mongoUrl = "mongodb+srv://dsouzalynn007:dsouzalynn007@basic-projects.n17xlrw.mongodb.net/";
 let Port=8888
 
-function mongoConnection() {
+let mongoConnection=()=> {
     try {
-        client.connect(mongoUrl);
+        connect(mongoUrl);
         console.log("mongo db connected")
     } catch (error) {
         console.log(error)
     }
 }
-
 mongoConnection()
-
 
 app.get("/", (req,res) => {
     try {
@@ -27,19 +24,13 @@ app.get("/", (req,res) => {
             msg:"welcome to car App"
         })
     } catch (error) {
-        
+        console.log(error)
     }
 })
-
-app.use(bodyParser.json());
-app.use(
-  bodyParser.urlencoded({
-    extended: true,
-  })
-);
-app.use(route)
-
-
-app.listen(Port, () => {
+.use(cors())
+.use(express.json())
+.use(express.urlencoded({ extended: true }))
+.use(route)
+.listen(Port, () => {
     console.log(`server started At port ${Port}`)
 })
